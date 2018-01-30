@@ -1,0 +1,190 @@
+:source-highlighter: pygments
+:sectnums:
+
+= Machinekit Projects Overview
+:toc:
+
+== Goal of this project:
+
+This document describes all the bits and pieces which are spread out over
+different issues in repositories. A lot of information is already in
+those issues, but this information is fragmented in such a way that there
+is no clear path.
+
+Documents describing all of the points below _SHOULD_ be written in such
+a way that deep technical knowledge about programming is not mandatory for
+general understanding.
+
+Of course the deeper we get, the more detailed information will become and
+at a certain point it _WILL_ be necessary to have this technical knowledge.
+
+So, the goals:
+
+. Creating sanity
+. Consensus and understanding of the goal of the Machinekit project by
+  clearly defining what the Machinekit project actually is about.
+. Clarity on improvements by specifying what _WILL_ be improved and what
+  _WILL NOT_ be improved. A scope.
+. Insight on what parts are needed for different improvements. So a decision
+  can be made with which parts to start, and which parts have the most
+  benefit over different projects.
+. technical clarity on how to implement these imrovements. This means that
+  diagrams _MUST_ be made so people will know about the structural side
+  and the technical details _WITHOUT_ having to resort to dive into code to
+  understand applications.
+
+== Using Asciidoc for creating sanity.
+
+* Asciidoc is a well defined format about the structure of content.
+* Asciidoctor as a program
+  ** is mature
+  ** has a big community
+  ** different content can be generated, for example
+     html / pdf / epub files.
+* By using asciidoctor with the asciidoctor-diagram diagrams can be made with
+  ease in a readable format.
+* Focus can thus be on creating quality content.
+* We have git version control.
+
+<<<
+== Steps
+
+. Gathering discussions on improvements & functional solutions. By using
+  `asciidoctor-diagram` a document must be made giving on all pieces of the
+  puzzle, Big and small, (im)possible solutions.
+. Define project goals and communicate these.
+. Creating links/relations between these blobs to view which parts rely on
+  which parts.
+. Gather and define sub projects. The smaller the (sub) projects are, the
+  easier it will be to solve them because understanding their relations with
+  other parts of the Project is clear.
+. Subprojects _MUST_ have diagrams to define the functionality we aim to have
+  on the problems we aim to solve.
+. Subprojects _MUST_ have information on the technical choices for solving the
+  functionality.
+
+Links to various document will be put here.
+We want to keep things readable.
+
+== Examples
+
+These examples are a bit silly, but they illustrate how we can get clarity
+and purpose in this project. This is even readable for people like me :)
+
+=== Pieces of the puzzle
+
+The idea is that we work top-down. Breaking problems into smaller pieces
+as we gather wisdom. And seeing which parts are not connected.
+For example, Goal: build a car.
+
+[graphviz, car, svg]
+....
+digraph car {
+  car;
+}
+....
+
+We need to have a frame, motor, wheels, drivetrain and exhaust to make a car.
+
+[graphviz, car2, svg]
+....
+digraph car {
+  car;
+  car -> frame;
+  car -> motor;
+  car -> wheels;
+  car -> drivetrain;
+  car -> exhaust;
+}
+....
+
+For a drivetrain we need to know about the motor specs, as well as which
+wheels are to be used. And for the exhaust we need to know about the motor
+connection too.
+
+[graphviz, car3, svg]
+....
+digraph car {
+  car;
+  car -> frame;
+  car -> motor;
+  car -> wheels;
+  car -> drivetrain;
+  car -> exhaust;
+
+  drivetrain -> motor [label = "power specs"];
+  drivetrain -> wheels [label = "size"];
+  exhaust -> motor [label = "dimensions"];
+}
+....
+
+But wait...
+
+Without information on desired acceleration and maximum speed we can't pick
+the correct motor. And the drivetrain and exhaust must fit within the frame.
+And what about seats, where do they fit? rearview mirror? tail light?
+
+[graphviz, car4, svg]
+....
+digraph car {
+  car;
+  car -> frame;
+  car -> motor;
+  car -> wheels;
+  car -> drivetrain;
+  car -> exhaust;
+
+  drivetrain -> motor [label = "power specs"];
+  drivetrain -> wheels [label = "size"];
+  exhaust -> motor [label = "dimensions"];
+
+  motor -> motor_dimensions [label = "max\nspeed"];
+  motor -> motor_dimensions [label = "max\nacceleration"];
+
+  exhaust -> frame [label = "must fit"];
+  frame -> exhaust [label = "must fit"];
+
+  drivetrain -> frame [label = "must fit"];
+  frame -> drivetrain [label = "must fit"];
+
+  seats;
+  steering_wheel;
+  rearview_mirror;
+  tail_light;
+}
+....
+
+So only if we know what the relations between the pieces are we can decide
+where first to work on.
+In the same time it will also be clear _why_ certain work is needed.
+
+<<<
+=== Functionality
+
+This is a PlantUML sequence diagram on how to drive home from work.
+
+When the work is finished, we need to open the door of the car and get seated
+
+[plantuml, open-door, svg]
+....
+Me -> Me : take out key
+Me -> Key : press unlock
+Key -> Car : signal to unlock car
+Car -> door : unlock
+Car -> Me : "Beep and Blink"
+Me -> door : open
+Me -> Car : enter
+....
+
+When driving the following can happen:
+
+[plantuml, petrol-light, svg]
+....
+Car -> Car : Low on petrol
+Car -> petrol_light : ON
+petrol_light -> Me : see light
+Me -> Me : Uh oh
+Me -> Car : Stop at next gas station
+Me -> Car : Fill tank
+Car -> petrol_light : OFF
+....
