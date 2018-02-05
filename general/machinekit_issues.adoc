@@ -1,0 +1,67 @@
+:source-highlighter: pygments
+:sectnums:
+
+= Machinekit Projects Goal and Issues
+:toc:
+
+This depicts the open issues and shows which ones are related.
+
+== What should Machinekit be
+
+=== Real time control stack
+Machinekit is a realtime (motion control) stack, that's usable on
+different platforms like x86, x64 and ARM.
+Legacy LinuxCNC has been split out into `machinekit-hal` and `machinekit-cnc`.
+
+=== Reconfigurable
+The machinekit-hal stack is a reconfigurable realtime Hardware Abstraction Layer
+where control functionality can be made by configuring standard components
+together. Wiring them up with signals. Reconfiguring a system by instantiating
+or removing components, adding or deleting signals can be done on-the-fly.
+
+=== Hardware agnostic
+Various drivers in machinekit-hal provide access to the hardware. For example
+the MESANET PCi FPGA cards, a beaglebone black with PRU, or other platforms
+like the De(1)0-nano (FPGA) or the MYIR Zynq (FPGA) boards.
+
+You can thusly configure your control system on various boards. Having the
+same control (behavious) on different hardware.
+
+=== Real time connections to Non-realtime
+The realtime HAL part of machinekit can connect to the non-realtime domain
+in various ways:
+
+* Thru the API by means of reading/setting scalars.
+* Thru the API by means of ringbuffers.
+* remote components (machinetalk) enable remote UI's.
+
+== List
+
+this section shows a list of issues that need some additional explaining,
+linking to important comments in that discussion.
+
+important:
+
+* link:https://github.com/machinekit/machinekit/issues/99[API's missing (99)]
+* link:https://github.com/machinekit/machinekit/issues/114[Design error: command serials may collide (114)]
+* link:https://github.com/machinekit/machinekit/issues/106[Interpreter API: rearchitecting required (106)]
+
+not looked at:
+* 24
+30
+47
+102
+104
+
+== Diagram
+[graphviz, machinekit-issues-diagram, svg]
+....
+digraph issues{
+    NML
+    114 [label = "Command Serials may collide (114)"]
+    99 [label = "API's missing (99)"]
+    106 [label = "Interpreter api rearchitecting (106)"]
+    114 -> NML
+    106 -> NML
+}
+....
