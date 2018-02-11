@@ -8,13 +8,14 @@ This depicts the open issues and shows which ones are related.
 
 == What should Machinekit be
 
-=== Real time control stack
-Machinekit is a realtime (motion control) stack, that's usable on
+=== Connection between userland and hardware
+Machinekit is a configurable driver stack, capable of realtime (motion control) tasks.
+Machinekit connects userland code with hardware drivers by means of configuring components. Machinekit is usable on
 different platforms like x86, x64 and ARM.
 Legacy LinuxCNC has been split out into `machinekit-hal` and `machinekit-cnc`.
 
 === Reconfigurable
-The machinekit-hal stack is a reconfigurable realtime Hardware Abstraction Layer
+The machinekit-hal stack is a reconfigurable (realtime) Hardware Abstraction Layer
 where control functionality can be made by configuring standard components
 together. Wiring them up with signals. Reconfiguring a system by instantiating
 or removing components, adding or deleting signals can be done on-the-fly.
@@ -40,28 +41,84 @@ in various ways:
 this section shows a list of issues that need some additional explaining,
 linking to important comments in that discussion.
 
-important:
+General:
 
 * link:https://github.com/machinekit/machinekit/issues/99[API's missing (99)]
 * link:https://github.com/machinekit/machinekit/issues/114[Design error: command serials may collide (114)]
 * link:https://github.com/machinekit/machinekit/issues/106[Interpreter API: rearchitecting required (106)]
+* link:https://github.com/machinekit/machinekit/issues/204[HAL remote component protocol: firm up security aspects #204]
+* link:https://github.com/machinekit/machinekit/issues/219[triggered RT execution of HAL function chains missing #219]
+* link:[we need a regression test framework which actually works. runtests has to go. #220]
+* link:https://github.com/machinekit/machinekit/issues/221[deprecate runtests for good. #221]
+* link:https://github.com/machinekit/machinekit/issues/285[HAL thread creation API: enable triggered and controlled-environment execution (eg simulated-time) #285]
+* link:https://github.com/machinekit/machinekit/issues/237[HAL API Changes #237]
+* link:https://github.com/machinekit/machinekit/issues/713[unit test for delayline component #713]
+
+CNC stack:
+
+* link:https://github.com/machinekit/machinekit/issues/134[GCode preview speed/data size/quality too slow #134]
+* link:https://github.com/machinekit/machinekit/issues/151[more flexible EmcPose representation #151]
+* link:https://github.com/machinekit/machinekit/issues/438[joints-axes branch not yet merged #438]
+
 
 not looked at:
-* 24
-30
-47
-102
-104
+
+* link:https://github.com/machinekit/machinekit/issues/24[firmware path handling : needs work #24]
+* link:https://github.com/machinekit/machinekit/issues/30[document HAL_STACKSIZE config param and merge into framesize checks #30]
+* link:https://github.com/machinekit/machinekit/issues/47[runtest for pci logic in userland threads #47]
+* link:https://github.com/machinekit/machinekit/issues/102[hal.kernel_version missing in non RTAPI versions #102]
+* link:https://github.com/machinekit/machinekit/issues/104[Configuration & distributed setups: INI files wont get us there #104]
+* link:https://github.com/machinekit/machinekit/issues/131[Switch ARM configurations to velocity-mode #131]
+* link:https://github.com/machinekit/machinekit/issues/210[watchdog functionality #210]
+
+discuss of these are solved/obsolete
+
+* link:https://github.com/machinekit/machinekit/issues/193[out of memory/large files results in stopped LinuxCNC #193]
 
 == Diagram
 [graphviz, machinekit-issues-diagram, svg]
 ....
 digraph issues{
-    NML
-    114 [label = "Command Serials may collide (114)"]
+    114 [label = "Command Serials\n may collide (114)"]
     99 [label = "API's missing (99)"]
-    106 [label = "Interpreter api rearchitecting (106)"]
+    106 [label = "Interpreter api\n rearchitecting (106)"]
+    204 [label = "HAL remote component\n protocol: firm up security\n aspects (204)"]
+    219 [label = "triggered RT execution\n of HAL function chains\n missing (219)"]
+    151 [label = "more flexible EmcPose\n representation (151)"]
+    134 [label = "GCode preview\n speed/data size/quality\n too slow (134)"]
+    220 [label = "we need a regression\n test framework which \nactually works. runtests\n has to go. (220)"]
+    221 [label = "deprecate runtests\n for good. (221)"]
+    237 [label = "HAL API Changes (237)"]
+    285 [label = "HAL thread creation\n API: enable triggered and\n controlled-environment\n execution (eg simulated-time) (285)"]
+    713 [label = "unit test for\n delayline component (713)"]
+    438 [label = "joints-axes branch\N not yet merged (438)"]
+    NML
+    219 -> 713
+    220 -> TESTS
+    713 -> TESTS
+    TESTS -> general
+    99 -> 237
+    285 -> 237
+    219 -> 285
+    151 -> 438
+    438 -> CNC_STACK
+    134 -> CNC_STACK
+    151 -> CNC_STACK
+    NML -> CNC_STACK
     114 -> NML
     106 -> NML
+    106 -> 134
+    204 -> REMOTE_COMPS
+    99 -> general
+    
+    #THESE 2 LINKS SHOULD BE DISCUSSED
+    114 -> general
+    106 -> general
+    
+    204 -> general
+    219 -> general
+    220 -> general
+    237 -> general
+    221 -> 220
 }
 ....
